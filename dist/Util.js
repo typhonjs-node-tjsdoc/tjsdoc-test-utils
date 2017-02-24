@@ -258,23 +258,28 @@ var Util = function () {
    }, {
       key: 'modTargetConfig',
       value: function modTargetConfig(target, config) {
+         var destDir = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'dest';
+
          if ((typeof target === 'undefined' ? 'undefined' : (0, _typeof3.default)(target)) !== 'object') {
             throw new TypeError('\'target\' is not an \'object\'.');
          }
          if (typeof target.name !== 'string') {
             throw new TypeError('\'target.name\' is not a \'string\'.');
          }
+         if (typeof target.type !== 'string') {
+            throw new TypeError('\'target.type\' is not a \'string\'.');
+         }
          if (typeof config.destination !== 'string') {
             throw new TypeError('\'config.destination\' is not a \'string\'.');
          }
 
-         var splitPath = config.destination.split('./test/fixture/dest/');
+         var splitPath = config.destination.split('./test/fixture/' + destDir + '/');
 
          if (splitPath.length < 2) {
-            throw new Error('Could not split \'config.destination\' (' + config.destination + ') by \'./test/fixture/dest/\'');
+            throw new Error('Could not split \'config.destination\' (' + config.destination + ') by \'./test/fixture/' + destDir + '/\'');
          }
 
-         config.destination = './test/fixture/dest/' + target.name + '/' + splitPath[1];
+         config.destination = './test/fixture/' + destDir + '/' + target.type + '/' + target.name + '/' + splitPath[1];
       }
 
       /**
