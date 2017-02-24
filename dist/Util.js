@@ -135,7 +135,7 @@ var Util = function () {
       value: function ensureDir(target, dirName) {
          var destDir = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'dest';
 
-         return _fsExtra2.default.ensureDirSync('./test/fixture/' + destDir + '/' + target.name + '/' + dirName);
+         return _fsExtra2.default.ensureDirSync('./test/fixture/' + destDir + '/' + target.type + '/' + target.name + '/' + dirName);
       }
 
       /**
@@ -292,7 +292,7 @@ var Util = function () {
       value: function readDir(target, dirName) {
          var destDir = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'dest';
 
-         return _fsExtra2.default.readdirSync('./test/fixture/' + destDir + '/' + target.name + '/' + dirName);
+         return _fsExtra2.default.readdirSync('./test/fixture/' + destDir + '/' + target.type + '/' + target.name + '/' + dirName);
       }
 
       /**
@@ -311,7 +311,7 @@ var Util = function () {
          var dirName = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'tjsdoc';
          var destDir = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 'dest';
 
-         var html = _fsExtra2.default.readFileSync('./test/fixture/' + destDir + '/' + target.name + '/' + dirName + '/' + fileName, { encoding: 'utf-8' });
+         var html = _fsExtra2.default.readFileSync('./test/fixture/' + destDir + '/' + target.type + '/' + target.name + '/' + dirName + '/' + fileName, { encoding: 'utf-8' });
 
          var $ = _cheerio2.default.load(html);
 
@@ -334,7 +334,7 @@ var Util = function () {
          var dirName = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'tjsdoc';
          var destDir = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 'dest';
 
-         return _fsExtra2.default.readFileSync('./test/fixture/' + destDir + '/' + target.name + '/' + dirName + '/' + fileName, { encoding: 'utf-8' });
+         return _fsExtra2.default.readFileSync('./test/fixture/' + destDir + '/' + target.type + '/' + target.name + '/' + dirName + '/' + fileName, { encoding: 'utf-8' });
       }
 
       /**
@@ -371,7 +371,7 @@ var Util = function () {
       value: function writeFile(target, dirName, fileName, data) {
          var destDir = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 'dest';
 
-         _fsExtra2.default.writeFileSync('./test/fixture/' + destDir + '/' + target.name + '/' + dirName + '/' + fileName, data);
+         _fsExtra2.default.writeFileSync('./test/fixture/' + destDir + '/' + target.type + '/' + target.name + '/' + dirName + '/' + fileName, data);
       }
    }]);
    return Util;

@@ -80,7 +80,7 @@ export default class Util
     */
    static ensureDir(target, dirName, destDir = 'dest')
    {
-      return fs.ensureDirSync(`./test/fixture/${destDir}/${target.name}/${dirName}`);
+      return fs.ensureDirSync(`./test/fixture/${destDir}/${target.type}/${target.name}/${dirName}`);
    }
 
    /**
@@ -200,7 +200,7 @@ export default class Util
     */
    static readDir(target, dirName, destDir = 'dest')
    {
-      return fs.readdirSync(`./test/fixture/${destDir}/${target.name}/${dirName}`);
+      return fs.readdirSync(`./test/fixture/${destDir}/${target.type}/${target.name}/${dirName}`);
    }
 
    /**
@@ -214,7 +214,7 @@ export default class Util
     */
    static readDoc(target, fileName, dirName = 'tjsdoc', destDir = 'dest')
    {
-      const html = fs.readFileSync(`./test/fixture/${destDir}/${target.name}/${dirName}/${fileName}`,
+      const html = fs.readFileSync(`./test/fixture/${destDir}/${target.type}/${target.name}/${dirName}/${fileName}`,
        { encoding: 'utf-8' });
 
       const $ = cheerio.load(html);
@@ -233,7 +233,8 @@ export default class Util
     */
    static readFile(target, fileName, dirName = 'tjsdoc', destDir = 'dest')
    {
-      return fs.readFileSync(`./test/fixture/${destDir}/${target.name}/${dirName}/${fileName}`, { encoding: 'utf-8' });
+      return fs.readFileSync(`./test/fixture/${destDir}/${target.type}/${target.name}/${dirName}/${fileName}`,
+       { encoding: 'utf-8' });
    }
 
    /**
@@ -261,7 +262,7 @@ export default class Util
     */
    static writeFile(target, dirName, fileName, data, destDir = 'dest')
    {
-      fs.writeFileSync(`./test/fixture/${destDir}/${target.name}/${dirName}/${fileName}`, data);
+      fs.writeFileSync(`./test/fixture/${destDir}/${target.type}/${target.name}/${dirName}/${fileName}`, data);
    }
 }
 
