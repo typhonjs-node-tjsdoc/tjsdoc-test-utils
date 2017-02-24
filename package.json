@@ -1,0 +1,50 @@
+{
+  "name": "tjsdoc-test-utils",
+  "version": "0.0.1",
+  "description": "Provides common testing utilities for tjsdoc (non-published)",
+  "homepage": "https://github.com/typhonjs-node-tjsdoc/tjsdoc-test-utils",
+  "license": "MPL-2.0",
+  "author": {
+    "name": "typhonrt"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/typhonjs-node-tjsdoc/tjsdoc-test-utils.git"
+  },
+  "maintainers": [
+    {
+      "name": "typhonrt",
+      "email": "support@typhonjs.io",
+      "url": "https://github.com/typhonrt"
+    }
+  ],
+  "dependencies": {
+    "chai": "^3.0.0",
+    "cheerio": "^0.22.0",
+    "fs-extra": "^2.0.0",
+    "strip-json-comments": "^2.0.0"
+  },
+  "devDependencies": {
+    "typhonjs-config-eslint": "^0.5.0",
+    "typhonjs-npm-build-test": "^0.5.0"
+  },
+  "scripts": {
+    "build": "babel-node ./node_modules/typhonjs-npm-scripts-build-babel/scripts/build.js",
+    "eslint": "eslint .",
+    "prepublish": "babel-node ./node_modules/typhonjs-npm-scripts-publish/scripts/prepublish.js",
+    "test": "babel-node ./node_modules/typhonjs-npm-scripts-test-mocha/scripts/mocha.js",
+    "test-coverage": "babel-node ./node_modules/typhonjs-npm-scripts-test-mocha/scripts/mocha-istanbul.js"
+  },
+  "keywords": [
+  ],
+  "files": [
+    "dist",
+    "src",
+    "AUTHORS.md"
+  ],
+  "directories": {},
+  "main": "dist/Util.js",
+  "bugs": {
+    "url": "https://github.com/typhonjs-node-tjsdoc/tjsdoc/issues"
+  }
+}
