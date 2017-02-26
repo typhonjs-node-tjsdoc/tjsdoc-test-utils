@@ -9,7 +9,7 @@ export default class TestConfig
       // Attempt to load local test config. A local config must be provided to define any target runtimes.
       let localConfig;
 
-      const npmScript = s_GET_NPM_SCRIPT();
+      const npmScript = s_GET_NPM_SCRIPT(moduleName);
 
       try
       {
@@ -31,13 +31,16 @@ export default class TestConfig
          process.exit(1);
       }
 
-      this._config = Object.assign(config, localConfig, { targets });
+      //this._config = Object.assign(config, localConfig, { targets });
+      Object.assign(this, config, localConfig, { targets });
 
-      console.log('!!! TestConfig - ctor - this._config: ' + JSON.stringify(this._config));
+      //console.log('!!! TestConfig - ctor - this._config: ' + JSON.stringify(this._config));
 
       console.log(`\nnpm script: ${npmScript}`);
       console.log(`test runtimes: \n${JSON.stringify(targets, null, 3)}\n`);
-      console.log(`test categories: ${JSON.stringify(this._config.category)}\n`);
+      console.log(`test categories: ${JSON.stringify(this.category)}\n`);
+
+      //console.log(`test categories: ${JSON.stringify(this._config.category)}\n`);
    }
 
    /**
@@ -53,7 +56,8 @@ export default class TestConfig
       // Potentially invoke category as the callback
       if (catType === 'function')
       {
-         for (const target of this._config.targets)
+         //for (const target of this._config.targets)
+         for (const target of this.targets)
          {
             this._currentTarget = target;
             category(target);
@@ -61,11 +65,14 @@ export default class TestConfig
       }
       else
       {
-         if (this._config.category[category])
+         //if (this._config.category[category])
+         if (this.category[category])
          {
-            if (this._config[category]['tests'][test])
+            //if (this._config[category]['tests'][test])
+            if (this[category]['tests'][test])
             {
-               for (const target of this._config.targets)
+               //for (const target of this._config.targets)
+               for (const target of this.targets)
                {
                   this._currentTarget = target;
                   callback(target);
@@ -75,10 +82,10 @@ export default class TestConfig
       }
    }
 
-   get()
-   {
-      return this._config;
-   }
+   //get()
+   //{
+   //   return this._config;
+   //}
 
    get currentTarget()
    {
@@ -91,6 +98,8 @@ export default class TestConfig
    }
 }
 
+// Module private ---------------------------------------------------------------------------------------------------
+
 function s_GET_NPM_SCRIPT()
 {
    try
@@ -100,7 +109,7 @@ function s_GET_NPM_SCRIPT()
    }
    catch (err)
    {
-      console.error(`'tjsdoc-tests' error: could not obtain 'npm_config_argv' environment variable.`);
+      console.error(`'${moduleName}' error: could not obtain 'npm_config_argv' environment variable.`);
       process.exit(1);
    }
 }

@@ -43,7 +43,7 @@ var TestConfig = function () {
       // Attempt to load local test config. A local config must be provided to define any target runtimes.
       var localConfig = void 0;
 
-      var npmScript = s_GET_NPM_SCRIPT();
+      var npmScript = s_GET_NPM_SCRIPT(moduleName);
 
       try {
          localConfig = require(_path2.default.resolve(localConfigPath));
@@ -60,13 +60,16 @@ var TestConfig = function () {
          process.exit(1);
       }
 
-      this._config = (0, _assign2.default)(config, localConfig, { targets: targets });
+      //this._config = Object.assign(config, localConfig, { targets });
+      (0, _assign2.default)(this, config, localConfig, { targets: targets });
 
-      console.log('!!! TestConfig - ctor - this._config: ' + (0, _stringify2.default)(this._config));
+      //console.log('!!! TestConfig - ctor - this._config: ' + JSON.stringify(this._config));
 
       console.log('\nnpm script: ' + npmScript);
       console.log('test runtimes: \n' + (0, _stringify2.default)(targets, null, 3) + '\n');
-      console.log('test categories: ' + (0, _stringify2.default)(this._config.category) + '\n');
+      console.log('test categories: ' + (0, _stringify2.default)(this.category) + '\n');
+
+      //console.log(`test categories: ${JSON.stringify(this._config.category)}\n`);
    }
 
    /**
@@ -84,12 +87,13 @@ var TestConfig = function () {
 
          // Potentially invoke category as the callback
          if (catType === 'function') {
+            //for (const target of this._config.targets)
             var _iteratorNormalCompletion = true;
             var _didIteratorError = false;
             var _iteratorError = undefined;
 
             try {
-               for (var _iterator = (0, _getIterator3.default)(this._config.targets), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+               for (var _iterator = (0, _getIterator3.default)(this.targets), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
                   var target = _step.value;
 
                   this._currentTarget = target;
@@ -110,14 +114,17 @@ var TestConfig = function () {
                }
             }
          } else {
-            if (this._config.category[category]) {
-               if (this._config[category]['tests'][test]) {
+            //if (this._config.category[category])
+            if (this.category[category]) {
+               //if (this._config[category]['tests'][test])
+               if (this[category]['tests'][test]) {
+                  //for (const target of this._config.targets)
                   var _iteratorNormalCompletion2 = true;
                   var _didIteratorError2 = false;
                   var _iteratorError2 = undefined;
 
                   try {
-                     for (var _iterator2 = (0, _getIterator3.default)(this._config.targets), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                     for (var _iterator2 = (0, _getIterator3.default)(this.targets), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
                         var _target = _step2.value;
 
                         this._currentTarget = _target;
@@ -141,11 +148,12 @@ var TestConfig = function () {
             }
          }
       }
-   }, {
-      key: 'get',
-      value: function get() {
-         return this._config;
-      }
+
+      //get()
+      //{
+      //   return this._config;
+      //}
+
    }, {
       key: 'currentTarget',
       get: function get() {
@@ -160,15 +168,15 @@ var TestConfig = function () {
    return TestConfig;
 }();
 
+// Module private ---------------------------------------------------------------------------------------------------
+
 exports.default = TestConfig;
-
-
 function s_GET_NPM_SCRIPT() {
    try {
       var npmArgv = JSON.parse(process.env['npm_config_argv']).cooked;
       return npmArgv[1];
    } catch (err) {
-      console.error('\'tjsdoc-tests\' error: could not obtain \'npm_config_argv\' environment variable.');
+      console.error('\'' + moduleName + '\' error: could not obtain \'npm_config_argv\' environment variable.');
       process.exit(1);
    }
 }
