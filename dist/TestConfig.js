@@ -1,5 +1,9 @@
 'use strict';
 
+Object.defineProperty(exports, "__esModule", {
+   value: true
+});
+
 var _getIterator2 = require('babel-runtime/core-js/get-iterator');
 
 var _getIterator3 = _interopRequireDefault(_getIterator2);
@@ -152,6 +156,9 @@ var TestConfig = function () {
    return TestConfig;
 }();
 
+exports.default = TestConfig;
+
+
 function s_GET_NPM_SCRIPT() {
    try {
       var npmArgv = JSON.parse(process.env['npm_config_argv']).cooked;
@@ -161,3 +168,4 @@ function s_GET_NPM_SCRIPT() {
       process.exit(1);
    }
 }
+module.exports = exports['default'];

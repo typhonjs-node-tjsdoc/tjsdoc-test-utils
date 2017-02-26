@@ -1,4 +1,4 @@
-class TestConfig
+export default class TestConfig
 {
    constructor(config, localConfigPath, moduleName)
    {
