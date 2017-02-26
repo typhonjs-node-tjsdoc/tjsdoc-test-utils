@@ -1,3 +1,5 @@
+import path from 'path';
+
 export default class TestConfig
 {
    constructor(config, localConfigPath, moduleName)

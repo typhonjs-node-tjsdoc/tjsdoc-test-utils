@@ -28,6 +28,10 @@ var _createClass2 = require('babel-runtime/helpers/createClass');
 
 var _createClass3 = _interopRequireDefault(_createClass2);
 
+var _path = require('path');
+
+var _path2 = _interopRequireDefault(_path);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var TestConfig = function () {
@@ -42,7 +46,7 @@ var TestConfig = function () {
       var npmScript = s_GET_NPM_SCRIPT();
 
       try {
-         localConfig = require(path.resolve(localConfigPath));
+         localConfig = require(_path2.default.resolve(localConfigPath));
       } catch (err) {
          console.error('\'' + moduleName + '\' error: could not require \'' + localConfigPath + '\'.');
          process.exit(1);
