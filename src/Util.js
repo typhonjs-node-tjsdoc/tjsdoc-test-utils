@@ -5,6 +5,8 @@ import path                from 'path';
 import process             from 'process';
 import stripJsonComments   from 'strip-json-comments';
 
+import TestConfig          from './TestConfig.js';
+
 const consoleLog = console.log;
 
 export default class Util
@@ -67,6 +69,11 @@ export default class Util
       {
          console.log = () => {};
       }
+   }
+
+   static createTestConfig(config, localConfigPath, moduleName)
+   {
+      return new TestConfig(config, localConfigPath, moduleName);
    }
 
    /**

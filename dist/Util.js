@@ -38,6 +38,10 @@ var _stripJsonComments = require('strip-json-comments');
 
 var _stripJsonComments2 = _interopRequireDefault(_stripJsonComments);
 
+var _TestConfig = require('./TestConfig.js');
+
+var _TestConfig2 = _interopRequireDefault(_TestConfig);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var consoleLog = console.log;
@@ -118,6 +122,11 @@ var Util = function () {
          } else {
             console.log = function () {};
          }
+      }
+   }, {
+      key: 'createTestConfig',
+      value: function createTestConfig(config, localConfigPath, moduleName) {
+         return new _TestConfig2.default(config, localConfigPath, moduleName);
       }
 
       /**
