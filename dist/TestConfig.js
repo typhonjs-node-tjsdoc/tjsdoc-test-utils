@@ -34,7 +34,21 @@ var _path2 = _interopRequireDefault(_path);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+/**
+ * Defines a test config which holds parameters assigned by test modules and overridden by any local config file
+ * relative to the execution directory.
+ *
+ * TODO: Add config verification!
+ */
 var TestConfig = function () {
+   /**
+    * Instantiates an instance with a given config object and a local path to a config which is loaded and merged
+    * with the given config.
+    *
+    * @param {object}   config -
+    * @param {string}   localConfigPath -
+    * @param {string}   moduleName -
+    */
    function TestConfig(config, localConfigPath, moduleName) {
       (0, _classCallCheck3.default)(this, TestConfig);
 
@@ -60,23 +74,19 @@ var TestConfig = function () {
          process.exit(1);
       }
 
-      //this._config = Object.assign(config, localConfig, { targets });
       (0, _assign2.default)(this, config, localConfig, { targets: targets });
-
-      //console.log('!!! TestConfig - ctor - this._config: ' + JSON.stringify(this._config));
 
       console.log('\nnpm script: ' + npmScript);
       console.log('test runtimes: \n' + (0, _stringify2.default)(targets, null, 3) + '\n');
       console.log('test categories: ' + (0, _stringify2.default)(this.category) + '\n');
-
-      //console.log(`test categories: ${JSON.stringify(this._config.category)}\n`);
    }
 
    /**
+    * A variable list
     *
-    * @param category
-    * @param test
-    * @param callback
+    * @param {function|string}   category -
+    * @param {string}            [test] -
+    * @param {function}          [callback] -
     */
 
 
@@ -87,7 +97,6 @@ var TestConfig = function () {
 
          // Potentially invoke category as the callback
          if (catType === 'function') {
-            //for (const target of this._config.targets)
             var _iteratorNormalCompletion = true;
             var _didIteratorError = false;
             var _iteratorError = undefined;
@@ -114,11 +123,8 @@ var TestConfig = function () {
                }
             }
          } else {
-            //if (this._config.category[category])
             if (this.category[category]) {
-               //if (this._config[category]['tests'][test])
                if (this[category]['tests'][test]) {
-                  //for (const target of this._config.targets)
                   var _iteratorNormalCompletion2 = true;
                   var _didIteratorError2 = false;
                   var _iteratorError2 = undefined;
@@ -147,18 +153,28 @@ var TestConfig = function () {
                }
             }
          }
+
+         this._currentTarget = void 0;
       }
 
-      //get()
-      //{
-      //   return this._config;
-      //}
+      /**
+       * Returns any current target set when forEachTarget is invoked for the given callback.
+       *
+       * @returns {{}}
+       */
 
    }, {
       key: 'currentTarget',
       get: function get() {
          return this._currentTarget;
       }
+
+      /**
+       * Returns the module name for this config.
+       *
+       * @returns {*}
+       */
+
    }, {
       key: 'moduleName',
       get: function get() {
@@ -170,8 +186,18 @@ var TestConfig = function () {
 
 // Module private ---------------------------------------------------------------------------------------------------
 
+/**
+ * Gets the NPM script being run.
+ *
+ * @param {string}   moduleName - The name of the source test module.
+ *
+ * @returns {*}
+ * @ignore
+ */
+
+
 exports.default = TestConfig;
-function s_GET_NPM_SCRIPT() {
+function s_GET_NPM_SCRIPT(moduleName) {
    try {
       var npmArgv = JSON.parse(process.env['npm_config_argv']).cooked;
       return npmArgv[1];

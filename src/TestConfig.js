@@ -1,7 +1,21 @@
 import path from 'path';
 
+/**
+ * Defines a test config which holds parameters assigned by test modules and overridden by any local config file
+ * relative to the execution directory.
+ *
+ * TODO: Add config verification!
+ */
 export default class TestConfig
 {
+   /**
+    * Instantiates an instance with a given config object and a local path to a config which is loaded and merged
+    * with the given config.
+    *
+    * @param {object}   config -
+    * @param {string}   localConfigPath -
+    * @param {string}   moduleName -
+    */
    constructor(config, localConfigPath, moduleName)
    {
       this._moduleName = moduleName;
@@ -26,28 +40,24 @@ export default class TestConfig
       if (targets.length === 0)
       {
          console.error(`'${moduleName}' error: Missing runtime configuration for NPM script '${
-            npmScript}' in 'targets' object hash of '${localConfigPath}'.`);
+          npmScript}' in 'targets' object hash of '${localConfigPath}'.`);
 
          process.exit(1);
       }
 
-      //this._config = Object.assign(config, localConfig, { targets });
       Object.assign(this, config, localConfig, { targets });
-
-      //console.log('!!! TestConfig - ctor - this._config: ' + JSON.stringify(this._config));
 
       console.log(`\nnpm script: ${npmScript}`);
       console.log(`test runtimes: \n${JSON.stringify(targets, null, 3)}\n`);
       console.log(`test categories: ${JSON.stringify(this.category)}\n`);
-
-      //console.log(`test categories: ${JSON.stringify(this._config.category)}\n`);
    }
 
    /**
+    * A variable list
     *
-    * @param category
-    * @param test
-    * @param callback
+    * @param {function|string}   category -
+    * @param {string}            [test] -
+    * @param {function}          [callback] -
     */
    forEachTarget(category, test, callback)
    {
@@ -56,7 +66,6 @@ export default class TestConfig
       // Potentially invoke category as the callback
       if (catType === 'function')
       {
-         //for (const target of this._config.targets)
          for (const target of this.targets)
          {
             this._currentTarget = target;
@@ -65,13 +74,10 @@ export default class TestConfig
       }
       else
       {
-         //if (this._config.category[category])
          if (this.category[category])
          {
-            //if (this._config[category]['tests'][test])
             if (this[category]['tests'][test])
             {
-               //for (const target of this._config.targets)
                for (const target of this.targets)
                {
                   this._currentTarget = target;
@@ -80,18 +86,25 @@ export default class TestConfig
             }
          }
       }
+
+      this._currentTarget = void 0;
    }
 
-   //get()
-   //{
-   //   return this._config;
-   //}
-
+   /**
+    * Returns any current target set when forEachTarget is invoked for the given callback.
+    *
+    * @returns {{}}
+    */
    get currentTarget()
    {
       return this._currentTarget;
    }
 
+   /**
+    * Returns the module name for this config.
+    *
+    * @returns {*}
+    */
    get moduleName()
    {
       return this._moduleName;
@@ -100,7 +113,15 @@ export default class TestConfig
 
 // Module private ---------------------------------------------------------------------------------------------------
 
-function s_GET_NPM_SCRIPT()
+/**
+ * Gets the NPM script being run.
+ *
+ * @param {string}   moduleName - The name of the source test module.
+ *
+ * @returns {*}
+ * @ignore
+ */
+function s_GET_NPM_SCRIPT(moduleName)
 {
    try
    {
