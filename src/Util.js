@@ -16,13 +16,13 @@ export default class Util
    /**
     * Helper function to invoke TJSDoc via the CLI interface.
     *
-    * @param {string}      cliPath - The file path to the CLI class to require.
+    * @param {string}   target - The file path to the CLI class to require.
     *
-    * @param {string|null} [configPath=null] - The config path to load.
+    * @param {string}   [configPath=null] - The config path to load.
     *
-    * @param {boolean}     [silent=true] - If false then console.log output is generated.
+    * @param {boolean}  [silent=true] - If false then console.log output is generated.
     */
-   static cli(target, configPath = null, silent = true, cwdPath)
+   static cli(target, configPath = void 0, silent = true, cwdPath)
    {
       if (typeof target.cli !== 'string') { throw new TypeError(`'target.cli' is not a 'string'.`); }
 
@@ -32,9 +32,13 @@ export default class Util
       {
          configPath = path.resolve(configPath);
 
-         console.log(`process: ${configPath}`);
+         console.log(`process (${target.name}): ${configPath}`);
 
          argv.push('-c', configPath);
+      }
+      else if (cwdPath)
+      {
+         console.log(`process cwd (${target.name}): ${path.resolve(cwdPath)}`);
       }
 
       const CLIClass = require(target.cli);
@@ -45,11 +49,11 @@ export default class Util
 
       const cli = new CLIClass(argv);
 
-      if (silent) { Util.consoleLogSwitch(false); }
+      if (silent) { Util.consoleLogSilent(true); }
 
       cli.exec();
 
-      if (silent) { Util.consoleLogSwitch(true); }
+      if (silent) { Util.consoleLogSilent(false); }
 
       if (cwdPath) { process.chdir(cwd); }
    }
@@ -57,18 +61,20 @@ export default class Util
    /**
     * Turns on or off console logging.
     *
-    * @param {boolean}  on - If true turn console logging on.
+    * @param {boolean}  silent - If true then turn console logging off.
     */
-   static consoleLogSwitch(on)
+   static consoleLogSilent(silent)
    {
-      if (on)
-      {
-         console.log = consoleLog;
-      }
-      else
-      {
-         console.log = () => {};
-      }
+      console.log = silent ? () => {} : consoleLog;
+
+      //if (on)
+      //{
+      //   console.log = consoleLog;
+      //}
+      //else
+      //{
+      //   console.log = () => {};
+      //}
    }
 
    static createTestConfig(config, localConfigPath, moduleName)
@@ -159,7 +165,7 @@ export default class Util
 
       console.log(`processing (${target.name}): ${configPath}`);
 
-      if (silent) { Util.consoleLogSwitch(false); }
+      if (silent) { Util.consoleLogSilent(true); }
 
       if (typeof TJSDoc.default === 'function')
       {
@@ -170,7 +176,7 @@ export default class Util
          TJSDoc.generate(config);
       }
 
-      if (silent) { Util.consoleLogSwitch(true); }
+      if (silent) { Util.consoleLogSilent(false); }
    }
 
    /**

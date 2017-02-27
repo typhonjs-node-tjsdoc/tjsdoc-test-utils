@@ -58,14 +58,14 @@ var Util = function () {
       /**
        * Helper function to invoke TJSDoc via the CLI interface.
        *
-       * @param {string}      cliPath - The file path to the CLI class to require.
+       * @param {string}   target - The file path to the CLI class to require.
        *
-       * @param {string|null} [configPath=null] - The config path to load.
+       * @param {string}   [configPath=null] - The config path to load.
        *
-       * @param {boolean}     [silent=true] - If false then console.log output is generated.
+       * @param {boolean}  [silent=true] - If false then console.log output is generated.
        */
       value: function cli(target) {
-         var configPath = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+         var configPath = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : void 0;
          var silent = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
          var cwdPath = arguments[3];
 
@@ -78,9 +78,11 @@ var Util = function () {
          if (configPath) {
             configPath = _path2.default.resolve(configPath);
 
-            console.log('process: ' + configPath);
+            console.log('process (' + target.name + '): ' + configPath);
 
             argv.push('-c', configPath);
+         } else if (cwdPath) {
+            console.log('process cwd (' + target.name + '): ' + _path2.default.resolve(cwdPath));
          }
 
          var CLIClass = require(target.cli);
@@ -94,13 +96,13 @@ var Util = function () {
          var cli = new CLIClass(argv);
 
          if (silent) {
-            Util.consoleLogSwitch(false);
+            Util.consoleLogSilent(true);
          }
 
          cli.exec();
 
          if (silent) {
-            Util.consoleLogSwitch(true);
+            Util.consoleLogSilent(false);
          }
 
          if (cwdPath) {
@@ -111,17 +113,22 @@ var Util = function () {
       /**
        * Turns on or off console logging.
        *
-       * @param {boolean}  on - If true turn console logging on.
+       * @param {boolean}  silent - If true then turn console logging off.
        */
 
    }, {
-      key: 'consoleLogSwitch',
-      value: function consoleLogSwitch(on) {
-         if (on) {
-            console.log = consoleLog;
-         } else {
-            console.log = function () {};
-         }
+      key: 'consoleLogSilent',
+      value: function consoleLogSilent(silent) {
+         console.log = silent ? function () {} : consoleLog;
+
+         //if (on)
+         //{
+         //   console.log = consoleLog;
+         //}
+         //else
+         //{
+         //   console.log = () => {};
+         //}
       }
    }, {
       key: 'createTestConfig',
@@ -242,7 +249,7 @@ var Util = function () {
          console.log('processing (' + target.name + '): ' + configPath);
 
          if (silent) {
-            Util.consoleLogSwitch(false);
+            Util.consoleLogSilent(true);
          }
 
          if (typeof TJSDoc.default === 'function') {
@@ -252,7 +259,7 @@ var Util = function () {
          }
 
          if (silent) {
-            Util.consoleLogSwitch(true);
+            Util.consoleLogSilent(false);
          }
       }
 
