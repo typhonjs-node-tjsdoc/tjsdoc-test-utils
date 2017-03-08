@@ -66,15 +66,6 @@ export default class Util
    static consoleLogSilent(silent)
    {
       console.log = silent ? () => {} : consoleLog;
-
-      //if (on)
-      //{
-      //   console.log = consoleLog;
-      //}
-      //else
-      //{
-      //   console.log = () => {};
-      //}
    }
 
    static createTestConfig(config, localConfigPath, moduleName)
