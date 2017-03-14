@@ -131,21 +131,41 @@ export default class Util
    /**
     * Helper function to invoke TJSDoc via the CLI interface.
     *
-    * @param {string}      target - The local file path or NPM module to require for TJSDoc class.
+    * @param {string}         target - The local file path or NPM module to require for TJSDoc class.
     *
-    * @param {string|null} [configPath=null] - The config path to load.
+    * @param {string|object}  [configPathOrObject] - The config path to load or local object to use as the config.
     *
-    * @param {boolean}     [silent=true] - If false then console.log output is generated.
+    * @param {boolean}        [silent=true] - If false then console.log output is generated.
     */
-   static invoke(target, configPath = null, silent = true, swapRuntime = true, swapPublisher = true)
+   static invoke(target, configPathOrObject = void 0, silent = true, swapRuntime = true, swapPublisher = true)
    {
       if (typeof target !== 'object') { throw new TypeError(`'target' is not an 'object'.`); }
-      if (typeof configPath !== 'string') { throw new TypeError(`'configPath' is not a 'string'.`); }
 
-      configPath = path.resolve(configPath);
+      let config;
 
-      const config = path.extname(configPath) === '.js' ? require(configPath) :
-       JSON.parse(stripJsonComments(fs.readFileSync(configPath, { encode: 'utf8' }).toString()));
+      switch (typeof configPathOrObject)
+      {
+         case 'string':
+         {
+            const configPath = path.resolve(configPathOrObject);
+
+            config = path.extname(configPath) === '.js' ? require(configPath) :
+             JSON.parse(stripJsonComments(fs.readFileSync(configPath, { encode: 'utf8' }).toString()));
+
+            console.log(`processing (${target.name}): ${configPath}`);
+            break;
+         }
+
+         case 'object':
+            config = configPathOrObject;
+
+            console.log(`processing (${target.name}): ${JSON.stringify(config)}`);
+            break;
+
+         default:
+            throw new TypeError(`'configPathOrObject' is not a 'string' or 'object'.`);
+            break;
+      }
 
       const TJSDoc = require(target.tjsdoc);
 
@@ -153,8 +173,6 @@ export default class Util
       if (swapPublisher) { config.publisher = target.publisher; }
 
       Util.modTargetConfig(target, config);
-
-      console.log(`processing (${target.name}): ${configPath}`);
 
       if (silent) { Util.consoleLogSilent(true); }
 
