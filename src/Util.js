@@ -22,7 +22,7 @@ export default class Util
     *
     * @param {boolean}  [silent=true] - If false then console.log output is generated.
     */
-   static cli(target, configPath = void 0, silent = true, cwdPath)
+   static cli(target, configPath = void 0, { cwdPath = void 0, silent = true } = {})
    {
       if (typeof target.cli !== 'string') { throw new TypeError(`'target.cli' is not a 'string'.`); }
 
@@ -137,7 +137,8 @@ export default class Util
     *
     * @param {boolean}        [silent=true] - If false then console.log output is generated.
     */
-   static invoke(target, configPathOrObject = void 0, silent = true, swapRuntime = true, swapPublisher = true)
+   static invoke(target, configPathOrObject = void 0, { modConfig = true, silent = true, swapPublisher = true,
+    swapRuntime = true } = {})
    {
       if (typeof target !== 'object') { throw new TypeError(`'target' is not an 'object'.`); }
 
@@ -172,7 +173,7 @@ export default class Util
       if (swapRuntime) { config.runtime = target.runtime; }
       if (swapPublisher) { config.publisher = target.publisher; }
 
-      Util.modTargetConfig(target, config);
+      if (modConfig) { Util.modTargetConfig(target, config); }
 
       if (silent) { Util.consoleLogSilent(true); }
 
