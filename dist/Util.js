@@ -4,6 +4,10 @@ Object.defineProperty(exports, "__esModule", {
    value: true
 });
 
+var _stringify = require('babel-runtime/core-js/json/stringify');
+
+var _stringify2 = _interopRequireDefault(_stringify);
+
 var _typeof2 = require('babel-runtime/helpers/typeof');
 
 var _typeof3 = _interopRequireDefault(_typeof2);
@@ -66,8 +70,12 @@ var Util = function () {
        */
       value: function cli(target) {
          var configPath = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : void 0;
-         var silent = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
-         var cwdPath = arguments[3];
+
+         var _ref = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {},
+             _ref$cwdPath = _ref.cwdPath,
+             cwdPath = _ref$cwdPath === undefined ? void 0 : _ref$cwdPath,
+             _ref$silent = _ref.silent,
+             silent = _ref$silent === undefined ? true : _ref$silent;
 
          if (typeof target.cli !== 'string') {
             throw new TypeError('\'target.cli\' is not a \'string\'.');
@@ -120,15 +128,6 @@ var Util = function () {
       key: 'consoleLogSilent',
       value: function consoleLogSilent(silent) {
          console.log = silent ? function () {} : consoleLog;
-
-         //if (on)
-         //{
-         //   console.log = consoleLog;
-         //}
-         //else
-         //{
-         //   console.log = () => {};
-         //}
       }
    }, {
       key: 'createTestConfig',
@@ -209,31 +208,55 @@ var Util = function () {
       /**
        * Helper function to invoke TJSDoc via the CLI interface.
        *
-       * @param {string}      target - The local file path or NPM module to require for TJSDoc class.
+       * @param {string}         target - The local file path or NPM module to require for TJSDoc class.
        *
-       * @param {string|null} [configPath=null] - The config path to load.
+       * @param {string|object}  [configPathOrObject] - The config path to load or local object to use as the config.
        *
-       * @param {boolean}     [silent=true] - If false then console.log output is generated.
+       * @param {boolean}        [silent=true] - If false then console.log output is generated.
        */
 
    }, {
       key: 'invoke',
       value: function invoke(target) {
-         var configPath = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
-         var silent = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
-         var swapRuntime = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
-         var swapPublisher = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : true;
+         var configPathOrObject = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : void 0;
+
+         var _ref2 = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {},
+             _ref2$modConfig = _ref2.modConfig,
+             modConfig = _ref2$modConfig === undefined ? true : _ref2$modConfig,
+             _ref2$silent = _ref2.silent,
+             silent = _ref2$silent === undefined ? true : _ref2$silent,
+             _ref2$swapPublisher = _ref2.swapPublisher,
+             swapPublisher = _ref2$swapPublisher === undefined ? true : _ref2$swapPublisher,
+             _ref2$swapRuntime = _ref2.swapRuntime,
+             swapRuntime = _ref2$swapRuntime === undefined ? true : _ref2$swapRuntime;
 
          if ((typeof target === 'undefined' ? 'undefined' : (0, _typeof3.default)(target)) !== 'object') {
             throw new TypeError('\'target\' is not an \'object\'.');
          }
-         if (typeof configPath !== 'string') {
-            throw new TypeError('\'configPath\' is not a \'string\'.');
+
+         var config = void 0;
+
+         switch (typeof configPathOrObject === 'undefined' ? 'undefined' : (0, _typeof3.default)(configPathOrObject)) {
+            case 'string':
+               {
+                  var configPath = _path2.default.resolve(configPathOrObject);
+
+                  config = _path2.default.extname(configPath) === '.js' ? require(configPath) : JSON.parse((0, _stripJsonComments2.default)(_fsExtra2.default.readFileSync(configPath, { encode: 'utf8' }).toString()));
+
+                  console.log('processing (' + target.name + '): ' + configPath);
+                  break;
+               }
+
+            case 'object':
+               config = configPathOrObject;
+
+               console.log('processing (' + target.name + '): ' + (0, _stringify2.default)(config));
+               break;
+
+            default:
+               throw new TypeError('\'configPathOrObject\' is not a \'string\' or \'object\'.');
+               break;
          }
-
-         configPath = _path2.default.resolve(configPath);
-
-         var config = _path2.default.extname(configPath) === '.js' ? require(configPath) : JSON.parse((0, _stripJsonComments2.default)(_fsExtra2.default.readFileSync(configPath, { encode: 'utf8' }).toString()));
 
          var TJSDoc = require(target.tjsdoc);
 
@@ -244,9 +267,9 @@ var Util = function () {
             config.publisher = target.publisher;
          }
 
-         Util.modTargetConfig(target, config);
-
-         console.log('processing (' + target.name + '): ' + configPath);
+         if (modConfig) {
+            Util.modTargetConfig(target, config);
+         }
 
          if (silent) {
             Util.consoleLogSilent(true);
