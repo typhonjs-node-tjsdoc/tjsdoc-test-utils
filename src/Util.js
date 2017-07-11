@@ -22,7 +22,7 @@ export default class Util
     *
     * @param {boolean}  [silent=true] - If false then console.log output is generated.
     */
-   static cli(target, configPath = void 0, { cwdPath = void 0, silent = true } = {})
+   static async cli(target, configPath = void 0, { cwdPath = void 0, silent = true } = {})
    {
       if (typeof target.cli !== 'string') { throw new TypeError(`'target.cli' is not a 'string'.`); }
 
@@ -51,7 +51,7 @@ export default class Util
 
       if (silent) { Util.consoleLogSilent(true); }
 
-      cli.exec();
+      await cli.exec();
 
       if (silent) { Util.consoleLogSilent(false); }
 
@@ -137,7 +137,7 @@ export default class Util
     *
     * @param {boolean}        [silent=true] - If false then console.log output is generated.
     */
-   static invoke(target, configPathOrObject = void 0, { modConfig = true, silent = true, swapPublisher = true,
+   static async invoke(target, configPathOrObject = void 0, { modConfig = true, silent = true, swapPublisher = true,
     swapRuntime = true } = {})
    {
       if (typeof target !== 'object') { throw new TypeError(`'target' is not an 'object'.`); }
@@ -165,7 +165,6 @@ export default class Util
 
          default:
             throw new TypeError(`'configPathOrObject' is not a 'string' or 'object'.`);
-            break;
       }
 
       const TJSDoc = require(target.tjsdoc);
@@ -177,14 +176,7 @@ export default class Util
 
       if (silent) { Util.consoleLogSilent(true); }
 
-      if (typeof TJSDoc.default === 'function')
-      {
-         TJSDoc.default.generate(config);
-      }
-      else
-      {
-         TJSDoc.generate(config);
-      }
+      typeof TJSDoc.default === 'function' ? await TJSDoc.default.generate(config) : await TJSDoc.generate(config);
 
       if (silent) { Util.consoleLogSilent(false); }
    }

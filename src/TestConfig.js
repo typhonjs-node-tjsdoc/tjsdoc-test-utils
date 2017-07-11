@@ -69,6 +69,7 @@ export default class TestConfig
          for (const target of this.targets)
          {
             this._currentTarget = target;
+
             category(target);
          }
       }
@@ -81,7 +82,48 @@ export default class TestConfig
                for (const target of this.targets)
                {
                   this._currentTarget = target;
+
                   callback(target);
+               }
+            }
+         }
+      }
+
+      this._currentTarget = void 0;
+   }
+
+   /**
+    * A variable list
+    *
+    * @param {function|string}   category -
+    * @param {string}            [test] -
+    * @param {function}          [callback] -
+    */
+   async forEachTargetAsync(category, test, callback)
+   {
+      const catType = typeof category;
+
+      // Potentially invoke category as the callback
+      if (catType === 'function')
+      {
+         for (const target of this.targets)
+         {
+            this._currentTarget = target;
+
+            await category(target);
+         }
+      }
+      else
+      {
+         if (this.category[category])
+         {
+            if (this[category]['tests'][test])
+            {
+               for (const target of this.targets)
+               {
+                  this._currentTarget = target;
+
+                  await callback(target);
                }
             }
          }
