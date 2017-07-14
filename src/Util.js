@@ -176,7 +176,7 @@ export default class Util
 
       if (silent) { Util.consoleLogSilent(true); }
 
-      typeof TJSDoc.default === 'function' ? await TJSDoc.default.generate(config) : await TJSDoc.generate(config);
+      await (typeof TJSDoc.default === 'function' ? TJSDoc.default.generate(config) : TJSDoc.generate(config));
 
       if (silent) { Util.consoleLogSilent(false); }
    }
